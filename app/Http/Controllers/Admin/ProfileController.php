@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 // 以下の1行を追記することで、Profile Modelが扱えるようになる
 use App\Models\Profile;
 
+use App\Models\ProfileHistory;
+
+use Carbon\Carbon;
+
 class ProfileController extends Controller
 {
     public function add()
@@ -57,6 +61,11 @@ class ProfileController extends Controller
 
         // 該当するデータを上書きして保存する
         $profile->fill($profile_form)->save();
+        
+        $profile_history = new ProfileHistory();
+        $profile_history->profile_id = $profile->id;
+        $profile_history->edited_at = Carbon::now();
+        $profile_history->save();
 
         return redirect('admin/profile/create');
     }
